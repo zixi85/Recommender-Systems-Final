@@ -69,8 +69,8 @@ class NeuMFHead(nn.Module):
         super().__init__()
         self.u_dim = u_emb.shape[1]
         self.i_dim = i_bert.shape[1]
-        self.u_mat = nn.Parameter(torch.tensor(u_emb),requires_grad=False)
-        self.i_mat = nn.Parameter(torch.tensor(i_bert),requires_grad=False)
+        self.u_mat = nn.Parameter(torch.tensor(u_emb, dtype=torch.float32), requires_grad=False)
+        self.i_mat = nn.Parameter(torch.tensor(i_bert, dtype=torch.float32), requires_grad=False)
         self.mlp = nn.Sequential(
             nn.Linear(self.u_dim+self.i_dim, mlp_dims[0]), nn.ReLU(),
             nn.Linear(mlp_dims[0], mlp_dims[1]), nn.ReLU(),
