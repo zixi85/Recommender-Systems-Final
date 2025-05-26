@@ -35,10 +35,10 @@ def gen_item_bert(meta_path, item2id, out="item_bert.npy"):
 # 4) LightGCN dataset
 class LightGCNDataset(Dataset):
     def __init__(self, interactions, num_users, num_items, neg=1):
-        self.pos=interactions.values.tolist()
+        self.pos = interactions.values.tolist()
         self.U, self.I = num_users, num_items
-        self.neg=neg
-        self.user_hist=interactions.groupby(0)[1].apply(set).to_dict()
+        self.neg = neg
+        self.user_hist = interactions.groupby('user_id')['item_id'].apply(set).to_dict()
     def __len__(self): return len(self.pos)
     def __getitem__(self, i):
         u,i,_=self.pos[i]
