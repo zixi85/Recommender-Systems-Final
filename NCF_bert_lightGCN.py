@@ -151,3 +151,21 @@ if __name__=="__main__":
     head = NeuMFHead(user_emb, item_bert)
     train_neumf(head, train, torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
     eval_rec(head, train, test)
+
+    # build inverse maps to recover original IDs
+    inv_u2i = {v: k for k, v in u2i.items()}
+    inv_i2i = {v: k for k, v in i2i.items()}
+
+    # score all items for each user and pick top 10
+    scores = user_emb.dot(item_bert.T)
+    top_k = 10
+    top_items = np.argsort(-scores, axis=1)[:, :top_k]
+
+    # write submission in sample_submission format
+    with open("submission.csv", "w") as f:
+        f.write("ID,user_id,item_id\n")
+        for u_idx, items in enumerate(top_items):
+            orig_u = inv_u2i[u_idx]
+            preds = [str(inv_i2i[i]) for i in items]
+            line = f"{orig_u},{orig_u},\"{','.join(preds)}\"\n"
+            f.write(line)
